@@ -1,6 +1,7 @@
 # fe_assignment
 
-rays = ['C7+','C5+','R5-']
+rays = ['C2+','C3+','C5+','C6-','R4+','R5+','C7+','R5-']
+mirror_positions = [(3,2),(3,7),(6,4),(8,7,10)] 
 
 1. If hits directly, its absorbed
 2. If pass diagonally, its redirected
@@ -15,7 +16,7 @@ input validation <- what if input is invalid
 stateful <- grid needs to keep track mirror (schema for state)
 list of dictionary, each dictionary is mirror
 
-python array is a linkedlist so indexing is O(n) -> so power of array is numpy
+-> so power of array is numpy
 
 numpy array, representing each mirror with -1 or 1–
 
@@ -46,7 +47,7 @@ threading. -> turning into async can be done later.
 
 ** test cases -> check for logical error. (shooting from column 9 when the grid is only 8x8)
 
-
+Use type hints
 
 
 # how code is organised
