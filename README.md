@@ -63,3 +63,12 @@ Use type hints
 # caching
 
 # Switch case
+
+
+Take home project tips
+1. set up virtual environment (with dependencies installed)
+2. triple check code to submit (instructions to set everything up)
+3. Focus on solving the code problem first and optimise later
+4. Add additional features if time permits
+5. If you have any questions please clarify instead of being instantly rejected when it fails the test case
+6. Small write up on design decisions, and potential improvements
