@@ -79,3 +79,10 @@ Malformed inputs
 1. R or C out of range
 2. invalid characters in test
 3. invalid file format
+
+
+*** make sure its able to run on linux
+
+Questions:
+1. is -> separated by space " "
+2. input files are .txt
