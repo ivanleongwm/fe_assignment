@@ -72,3 +72,10 @@ Take home project tips
 4. Add additional features if time permits
 5. If you have any questions please clarify instead of being instantly rejected when it fails the test case
 6. Small write up on design decisions, and potential improvements
+
+
+
+Malformed inputs
+1. R or C out of range
+2. invalid characters in test
+3. invalid file format
