@@ -1,0 +1,16 @@
+.grid {
+    margin: 100px auto;
+
+}
+
+.row {
+    display:flex;
+    justify-content:center;
+}
+
+.node {
+    width:20px;
+    height: 20px;
+    outline: 1px solid grey;
+    display:inline-block;
+}
