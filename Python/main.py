@@ -59,7 +59,7 @@ if __name__ == '__main__':
     
     # parse and verify the input (abstract input validation with another function or file)
     try:
-        '''INSERT INPUT VALIDATION'''
+        """INSERT INPUT VALIDATION"""
         inputs = sys.argv[1:]
         main(inputs)
     except KeyboardInterrupt:
