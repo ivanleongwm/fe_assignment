@@ -6,7 +6,9 @@ if __name__ == '__main__':
     import logging
     from impl1 import Session
 
+
 def parse_design_file(designFilepath):
+    """Parse design file and return length and mirror position."""
     with open(designFilepath) as file:
         lines = file.read().splitlines()
         # Remove comment / invalid lines
@@ -20,7 +22,9 @@ def parse_design_file(designFilepath):
 
     return length, mirror_positions
 
+
 def parse_test_file(testFilepath):
+    """Parse test file and return an array of places a ray is fired."""
     with open(testFilepath) as file:
         lines = file.read().splitlines()
         # Remove comment / invalid lines 
@@ -28,13 +32,13 @@ def parse_test_file(testFilepath):
         rays = [l for l in lines if re.match(pattern,l)]
         return rays
 
+
 def main(inputs):
-    
+    """Validate inputs and start simulation session."""
     level = logging.DEBUG
     fmt = '[%(levelname)s] %(asctime)s - %(message)s'
     logging.basicConfig(level=level, format=fmt)
 
-    # 
     if len(inputs) == 2:
         designFilepath = inputs[0]
         testFilepath = inputs[1]
@@ -51,15 +55,9 @@ def main(inputs):
         sys.exit(2)
 
 
-    #consumer = XXX
-    #conumer.run()
-
-
 if __name__ == '__main__':
-    
-    # parse and verify the input (abstract input validation with another function or file)
+    """Parse and validate CLI arguments and call main function."""
     try:
-        """INSERT INPUT VALIDATION"""
         inputs = sys.argv[1:]
         main(inputs)
     except KeyboardInterrupt:
