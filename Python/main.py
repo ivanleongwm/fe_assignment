@@ -2,6 +2,8 @@ if __name__ == '__main__':
     import sys
     import os
     import re
+    import time
+    import logging
     from impl1 import Session
 
 def parse_design_file(designFilepath):
@@ -28,21 +30,26 @@ def parse_test_file(testFilepath):
 
 def main(inputs):
     
+    level = logging.DEBUG
+    fmt = '[%(levelname)s] %(asctime)s - %(message)s'
+    logging.basicConfig(level=level, format=fmt)
+
     # 
     if len(inputs) == 2:
         designFilepath = inputs[0]
         testFilepath = inputs[1]
         length, mirror_positions = parse_design_file(designFilepath)
         rays = parse_test_file(testFilepath)
+
+        start = time.perf_counter()
         session = Session(length, mirror_positions, rays)
         session.start_simulation()
+        end = time.perf_counter()
+        print(end-start)
 
     else:
         sys.exit(2)
 
-
-    #config_logger()
-    #logger.info("Configured logger")
 
     #consumer = XXX
     #conumer.run()

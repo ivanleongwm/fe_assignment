@@ -5,25 +5,20 @@ class Cell():
         self.mirror = False
         self.life = float('inf')
 
-def createGrid(length,mirror_positions):
-    # Create Empty Grid
-    rows = []
-    for _ in range(length):
-        columns = []
-        for _ in range(length):
-            columns.append(Cell())
-        rows.append(columns)
-    #print(rows)
+    def deduct_life(self):
+        self.life -= 1
+        if self.life == 0:
+            self.mirror = False
+            self.life = float('inf')
+    
+    def is_mirror(self):
+        return self.mirror
+    
+    def set_mirror(self):
+        self.mirror = True
 
-    # Insert Mirrors
-    for mirror in mirror_positions:
-        row_idx = mirror[0] - 1
-        col_idx = mirror[1] - 1
-        cell = rows[row_idx][col_idx]
-        cell.mirror = True
-        if len(mirror) == 3:
-            cell.life = mirror[2] 
-    return rows
+    def set_life(self,lifespan):
+        self.life = lifespan
 
 
 class Beam():
@@ -31,6 +26,7 @@ class Beam():
     def __init__(self,start_coordinates,length,grid) -> None:
         self.start_coordinates = start_coordinates
         self.end = False
+        self.collision = False
         # Initialise the starting coordinates of the beam
         if start_coordinates[0]=='R' and start_coordinates[2]=='+':
             self.curr_row_idx = int(start_coordinates[1]) - 1 
@@ -54,22 +50,30 @@ class Beam():
         # If mirror right beside end immediately
         if start_coordinates[0]=='C':
             if not (self.curr_col_idx == 0):
-                if grid[self.curr_row_idx][self.curr_col_idx - 1].mirror:
+                left_cell = grid[self.curr_row_idx][self.curr_col_idx - 1]
+                if left_cell.is_mirror():
                     self.end = True
                     self.print_output()
+                    left_cell.deduct_life()
             if not (self.curr_col_idx == (length - 1)):
-                if grid[self.curr_row_idx][self.curr_col_idx + 1].mirror:
+                right_cell = grid[self.curr_row_idx][self.curr_col_idx + 1]
+                if right_cell.is_mirror():
                     self.end = True
                     self.print_output()
+                    right_cell.deduct_life()
         if start_coordinates[0]=='R':
             if not (self.curr_row_idx == 0):
-                if grid[self.curr_row_idx - 1][self.curr_col_idx].mirror:
+                top_cell = grid[self.curr_row_idx - 1][self.curr_col_idx]
+                if top_cell.is_mirror():
                     self.end = True
                     self.print_output()
+                    top_cell.deduct_life()
             if not (self.curr_row_idx == (length - 1)):
-                if grid[self.curr_row_idx + 1][self.curr_col_idx].mirror:
+                bottom_cell = grid[self.curr_row_idx + 1][self.curr_col_idx]
+                if bottom_cell.is_mirror():
                     self.end = True
                     self.print_output()
+                    bottom_cell.deduct_life()
     
     def check_collision(self,grid):
         if self.end:
@@ -77,19 +81,18 @@ class Beam():
         # Check if current cell is a mirror
         #print("test",self.current_direction,self.curr_row_idx,self.curr_col_idx)
         curr_grid_cell = grid[self.curr_row_idx][self.curr_col_idx]
-        if curr_grid_cell.mirror == True:
+        if curr_grid_cell.is_mirror():
             self.current_direction = None
             self.end = True
-            print(self.start_coordinates,'->')
-            curr_grid_cell.life -= 1
-            if curr_grid_cell.life == 0:
-                curr_grid_cell.mirror = False
-                curr_grid_cell.life = float('inf')
+            self.collision = True
+            self.print_output()
+            curr_grid_cell.deduct_life()
             return None
 
     def check_mirror(self,grid,length):
         if self.end:
             return None
+        
         top_right_mirror = False
         bottom_right_mirror = False
         top_left_mirror = False
@@ -97,50 +100,66 @@ class Beam():
 
         # Check whether adjacent diagonals are mirrors and redirect
         if not (self.curr_col_idx == length - 1) and not (self.curr_row_idx == 0):
-            top_right_mirror = grid[self.curr_row_idx-1][self.curr_col_idx+1].mirror
+            top_right_cell = grid[self.curr_row_idx-1][self.curr_col_idx+1]
+            top_right_mirror = top_right_cell.is_mirror()
         if not (self.curr_col_idx == length - 1) and not (self.curr_row_idx == length - 1):
-            bottom_right_mirror = grid[self.curr_row_idx+1][self.curr_col_idx+1].mirror
+            bottom_right_cell = grid[self.curr_row_idx+1][self.curr_col_idx+1]
+            bottom_right_mirror = bottom_right_cell.is_mirror()
         if not (self.curr_col_idx == 0) and not (self.curr_row_idx == 0):
-            top_left_mirror = grid[self.curr_row_idx-1][self.curr_col_idx-1].mirror
+            top_left_cell = grid[self.curr_row_idx-1][self.curr_col_idx-1]
+            top_left_mirror = top_left_cell.is_mirror()
         if not (self.curr_col_idx == 0) and not (self.curr_row_idx == length - 1):
-            bottom_left_mirror = grid[self.curr_row_idx+1][self.curr_col_idx-1].mirror
+            bottom_left_cell = grid[self.curr_row_idx+1][self.curr_col_idx-1]
+            bottom_left_mirror = bottom_left_cell.is_mirror()
 
         if self.current_direction  == 'right':
             if top_right_mirror and bottom_right_mirror:
                 self.current_direction = 'left'
+                top_right_cell.deduct_life()
+                bottom_right_cell.deduct_life()
             elif  top_right_mirror:
                 self.current_direction = 'down'
+                top_right_cell.deduct_life()
             elif bottom_right_mirror:
                 self.current_direction = 'up'
+                bottom_right_cell.deduct_life()
 
         elif self.current_direction  == 'left':
             if top_left_mirror and bottom_left_mirror:
                 self.current_direction = 'right'
+                top_left_cell.deduct_life()
+                bottom_left_cell.deduct_life()
             elif top_left_mirror:
                 self.current_direction = 'down'
+                top_left_cell.deduct_life()
             elif  bottom_left_mirror:
                 self.current_direction = 'up'
+                bottom_left_cell.deduct_life()
 
         elif self.current_direction  == 'up':
             if top_left_mirror and top_right_mirror:
                 self.current_direction = 'down'
+                top_left_cell.deduct_life()
+                top_right_cell.deduct_life()
             elif top_left_mirror:
                 self.current_direction = 'right'
+                top_left_cell.deduct_life()
             elif top_right_mirror:
                 self.current_direction = 'left'
+                top_right_cell.deduct_life()
 
         elif self.current_direction  == 'down':
             if bottom_left_mirror and bottom_right_mirror:
                 self.current_direction = 'up'
+                bottom_left_cell.deduct_life()
+                bottom_right_cell.deduct_life()
             elif bottom_left_mirror:
                 self.current_direction = 'right'
+                bottom_left_cell.deduct_life()
             elif bottom_right_mirror:
                 self.current_direction = 'left'
-
+                bottom_right_cell.deduct_life()
         #print("Check bot left mirror",bottom_left_mirror)
-
-    def print_output(self):
-        print(self.start_coordinates,'->','{'+str(self.curr_row_idx + 1)+','+str(self.curr_col_idx + 1)+'}')
 
     def check_end(self,length):
         if self.current_direction == 'up' and self.curr_row_idx == 0:
@@ -169,14 +188,40 @@ class Beam():
         elif self.current_direction  == 'down':
             self.curr_row_idx += 1
 
+    def print_output(self):
+        if self.collision:
+            print(f"{self.start_coordinates} ->")
+        else:
+            print(self.start_coordinates,'->','{'+str(self.curr_row_idx + 1)+','+str(self.curr_col_idx + 1)+'}')
+
 
 class Session():
     def __init__(self,length,mirror_positions,rays):
         self.length = length
         self.mirror_positions = mirror_positions
         self.rays = rays
-        self.grid = createGrid(length,mirror_positions)
+        self.grid = self.createGrid()
     
+    def createGrid(self):
+        # Create Empty Grid
+        rows = []
+        for _ in range(self.length):
+            columns = []
+            for _ in range(self.length):
+                columns.append(Cell())
+            rows.append(columns)
+        #print(rows)
+
+        # Insert Mirrors
+        for mirror in self.mirror_positions:
+            row_idx = mirror[0] - 1
+            col_idx = mirror[1] - 1
+            cell = rows[row_idx][col_idx]
+            cell.set_mirror()
+            if len(mirror) == 3:
+                cell.set_life(mirror[2]) 
+        return rows
+
     def start_simulation(self):
         for ray in self.rays:
             beam = Beam(ray,self.length,self.grid)

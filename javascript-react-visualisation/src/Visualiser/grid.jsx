@@ -25,12 +25,11 @@ export default function Grid() {
                 {grid.map((row, rowIdx) => {
                     return <div className='row' key={rowIdx}>
                         {row.map((node, nodeIdx) => {
-                            const { row, col, isStart, isFinish } = node;
+                            const { row, col, isMirror} = node;
                             return (
                                 <Node
                                     key={nodeIdx}
-                                    isStart={isStart}
-                                    isFinish={isFinish}
+                                    isMirror={isMirror}
                                     row={row}
                                     col={col} />
                             );
