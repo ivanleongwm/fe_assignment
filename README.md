@@ -81,7 +81,7 @@ Malformed inputs
 1. R or C out of range
 2. invalid characters in test
 3. invalid file format
-
+4. what if main.py not entered.
 
 *** make sure its able to run on linux
 
@@ -97,3 +97,6 @@ Exit code 2: Incomplete arguments to CLI.
 Exit code 3: Invalid design file name or path.
 Exit code 4: Invalid test file name or path.
 Exit code 5: Invalid rays in testfile.
+Exit code 6: Invalid mirrors in designfile.
+Exit code 7: Number of holes missing.
+Exit code 8: Number of holes not on first uncommented line.

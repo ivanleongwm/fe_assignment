@@ -9,32 +9,30 @@ if __name__ == '__main__':
 
 def validate_parse_design_file(lines):
     pattern = r'^\d\s\d\s?\d*$'
-    noise = [l for l in lines if not re.match(pattern,l)]
-    print(noise)
-
-def read_design_file(designFilepath):
-    """Parse design file and return length and mirror position."""
-    try:
-        with open(designFilepath) as file:
-
-            lines = file.read().splitlines()
-
-            validate_parse_design_file(lines)
-
-            # Remove comment / invalid lines
-            data_lines = [l for l in lines if l.replace(" ","").isdigit()]
-            # Retrieve grid length
-            length = int(data_lines.pop(0))
-            # Retrieve mirror positions
-            mirror_positions = []
-            for mirrors in data_lines:
-                mirror_positions.append([int(mirror) for mirror in mirrors.split()])
-
-        return length, mirror_positions
-    except IOError:
-        print(f'Could not read file: {designFilepath}. Please check file name or directory.')
-        sys.exit(3)
-
+    error = False
+    length = None
+    mirror_count = 0
+    for idx, line in enumerate(lines):
+        if (not re.match(pattern,line)) and (line != '') and (not line.startswith('#')):
+            if line.isdigit() and length == None:
+                if mirror_count > 0:
+                    print('Number of holes in grid should be on first uncommented line.')
+                    sys.exit(8)
+                else:
+                    length = int(line)
+            else: 
+                error = True
+                print(f'Invalid Mirror: "{line}" on Line {idx + 1} of design file.')
+        else:
+            mirror_count += 1
+    if length == None:
+        print("Grid length missing from design file.")
+        sys.exit(7)
+    elif not error:
+        mirrors = [l for l in lines if re.match(pattern,line)]
+        return length, mirrors   
+    else:
+        sys.exit(6) 
 
 def validate_parse_test_file(lines):
     """Check test file for invalid line(s) other than comments, spaces or rays."""
@@ -49,6 +47,28 @@ def validate_parse_test_file(lines):
         return rays   
     else:
         sys.exit(5) 
+
+def read_design_file(designFilepath):
+    """Parse design file and return length and mirror position."""
+    try:
+        with open(designFilepath) as file:
+
+            lines = file.read().splitlines()
+
+            # Remove comment / invalid lines
+            length, data_lines = validate_parse_design_file(lines)
+            #data_lines = [l for l in lines if l.replace(" ","").isdigit()]
+            # Retrieve grid length
+            #length = int(data_lines.pop(0))
+            # Retrieve mirror positions
+            mirror_positions = []
+            for mirrors in data_lines:
+                mirror_positions.append([int(mirror) for mirror in mirrors.split()])
+
+        return length, mirror_positions
+    except IOError:
+        print(f'Could not read file: {designFilepath}. Please check file name or directory.')
+        sys.exit(3)
 
 
 def read_test_file(testFilepath):
