@@ -4,6 +4,7 @@ if __name__ == '__main__':
     import re
     import time
     import logging
+    import argparse
     from impl1 import Session
 
 
@@ -35,24 +36,28 @@ def parse_test_file(testFilepath):
 
 def main(inputs):
     """Validate inputs and start simulation session."""
-    level = logging.DEBUG
-    fmt = '[%(levelname)s] %(asctime)s - %(message)s'
-    logging.basicConfig(level=level, format=fmt)
+    #level = logging.DEBUG
+    #fmt = '[%(levelname)s] %(asctime)s - %(message)s'
+    #logging.basicConfig(level=level, format=fmt)
 
-    if len(inputs) == 2:
-        designFilepath = inputs[0]
-        testFilepath = inputs[1]
-        length, mirror_positions = parse_design_file(designFilepath)
-        rays = parse_test_file(testFilepath)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('designFilepath',help='Path to design file which specifies \
+                        the size of grid and positions and types of mirrors.')
+    parser.add_argument('testFilepath',help='Path to test file that lists the places \
+                        in order a ray is fired in.')
+    args = parser.parse_args()
 
-        start = time.perf_counter()
-        session = Session(length, mirror_positions, rays)
-        session.start_simulation()
-        end = time.perf_counter()
-        print(end-start)
+    designFilepath = args.designFilepath
+    testFilepath = args.testFilepath
+    
+    length, mirror_positions = parse_design_file(designFilepath)
+    rays = parse_test_file(testFilepath)
 
-    else:
-        sys.exit(2)
+    start = time.perf_counter()
+    session = Session(length, mirror_positions, rays)
+    session.start_simulation()
+    end = time.perf_counter()
+    print(end-start)
 
 
 if __name__ == '__main__':
