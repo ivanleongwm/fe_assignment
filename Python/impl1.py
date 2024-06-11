@@ -59,21 +59,21 @@ class Beam():
         self.collision = False
         
         """Initialise curr_row_idx, curr_col_idx and current_direction."""
-        if start_coordinates[0] == 'R' and start_coordinates[2] == '+':
-            self.curr_row_idx = int(start_coordinates[1]) - 1
+        if start_coordinates[0] == 'R' and start_coordinates[-1] == '+':
+            self.curr_row_idx = int(start_coordinates[1:-1]) - 1
             self.curr_col_idx = 0
             self.current_direction = 'right'
-        elif start_coordinates[0] == 'R' and start_coordinates[2] == '-':
-            self.curr_row_idx = int(start_coordinates[1]) - 1
+        elif start_coordinates[0] == 'R' and start_coordinates[-1] == '-':
+            self.curr_row_idx = int(start_coordinates[1:-1]) - 1
             self.curr_col_idx = length - 1
             self.current_direction = 'left'
-        elif start_coordinates[0] == 'C' and start_coordinates[2] == '+':
+        elif start_coordinates[0] == 'C' and start_coordinates[-1] == '+':
             self.curr_row_idx = 0
-            self.curr_col_idx = int(start_coordinates[1]) - 1
+            self.curr_col_idx = int(start_coordinates[1:-1]) - 1
             self.current_direction = 'down'
-        elif start_coordinates[0] == 'C' and start_coordinates[2] == '-':
+        elif start_coordinates[0] == 'C' and start_coordinates[-1] == '-':
             self.curr_row_idx = length - 1
-            self.curr_col_idx = int(start_coordinates[1]) - 1
+            self.curr_col_idx = int(start_coordinates[1:-1]) - 1
             self.current_direction = 'up'
 
         """Check if a mirror is right beside the beam at initial state.

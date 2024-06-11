@@ -28,7 +28,7 @@ def parse_test_file(testFilepath):
     with open(testFilepath) as file:
         lines = file.read().splitlines()
         # Remove comment / invalid lines 
-        pattern = r'^[CR][1-9][+-]$'
+        pattern = r'^[CR][0-9]+[+-]$'    #need to exclude c0+ as 0 is not a valid row
         rays = [l for l in lines if re.match(pattern,l)]
         return rays
 

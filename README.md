@@ -1,5 +1,7 @@
 # fe_assignment
 
+# LINUS parsing of argparse removed \ and does not work on mac, pls make sure it runs on linux!
+
 rays = ['C2+','C3+','C5+','C6-','R4+','R5+','C7+','R5-']
 mirror_positions = [(3,2),(3,7),(6,4),(8,7,10)] 
 
