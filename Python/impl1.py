@@ -212,7 +212,7 @@ class Beam():
             self.print_output()
     
     def move(self):
-        """Move the ray on step forward to the next cell coordinate by
+        """Move the ray one step towards the next cell coordinate by
         incrementing or decrementing the curr_col_idx or curr_row_idx."""
         if self.end:
             return None

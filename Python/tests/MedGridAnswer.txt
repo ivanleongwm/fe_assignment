@@ -31,11 +31,11 @@ R6- ->
 R7- -> {4,8}
 R8- ->
 R8- ->
-R8- ->
-R8- ->
-R8- ->
-R8- ->
-R8- ->
-R8- ->
-R8- ->               # possible slight error here (mirror life minus issue)
+R8- -> {8,1}
+R8- -> {8,1}
+R8- -> {8,1}
+R8- -> {8,1}
+R8- -> {8,1}
+R8- -> {8,1}
+R8- -> {8,1}              # possible slight error here (mirror life minus issue)
 R8- -> {8,1}
