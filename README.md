@@ -88,3 +88,12 @@ Malformed inputs
 Questions:
 1. is -> separated by space " "
 2. input files are .txt
+3. edge case with small grid and two mirrors beside upon entry. (clarify result)
+2. input cli arguments are the file names and not file directory.
+
+
+Exceptions to handle:
+Exit code 2: Incomplete arguments to CLI.
+Exit code 3: Invalid design file name or path.
+Exit code 4: Invalid test file name or path.
+Exit code 5: Invalid rays in testfile.
