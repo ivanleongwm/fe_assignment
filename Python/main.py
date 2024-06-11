@@ -7,80 +7,98 @@ if __name__ == '__main__':
     import argparse
     from impl1 import Session
 
-def validate_parse_design_file(lines):
-    pattern = r'^\d\s\d\s?\d*$'
-    error = False
-    length = None
-    mirror_count = 0
-    for idx, line in enumerate(lines):
-        if (not re.match(pattern,line)) and (line != '') and (not line.startswith('#')):
-            if line.isdigit() and length == None:
-                if mirror_count > 0:
-                    print('Number of holes in grid should be on first uncommented line.')
-                    sys.exit(8)
-                else:
-                    length = int(line)
-            else: 
-                error = True
-                print(f'Invalid Mirror: "{line}" on Line {idx + 1} of design file.')
+class File():
+    def __init__(self,filename):
+        self.filename = filename
+
+    def get_file_lines(self):
+        try:
+            with open(self.filename) as file:
+                lines = file.read().splitlines()
+                return lines
+        except IOError:
+            print(f'Could not read file: {self.filename}. Please check file name or directory.')
+            sys.exit(4)
+
+
+
+class DesignFile(File):
+    def __init__(self,filename):
+        super().__init__(filename)
+        self.file_lines = self.get_file_lines()
+        self.mirror_regex = r'^[1-9][0-9]*\s[1-9][0-9]*\s?([1-9][0-9]*)*$'
+        self.holes = None
+        self.mirrors = self.parse_mirrors()
+        self.error = False
+    
+    def validate(self):
+        self.check_holes_error()
+        self.check_mirror_error()
+
+    def check_holes_error(self):
+        for line in self.file_lines:
+            if re.match(self.mirror_regex,line):
+                print('Number of holes in FenixBox should be on first uncommented line.')
+                self.error = True
+                return None
+            elif line.isdigit():
+                self.holes = int(line)
+                return None
+        print('Number of holes in FenixBox missing from design file.')
+        self.error = True
+
+    def check_mirror_error(self):
+        if self.holes:
+            mirror_index = self.file_lines.index(str(self.holes)) + 1
         else:
-            mirror_count += 1
-    if length == None:
-        print("Grid length missing from design file.")
-        sys.exit(7)
-    elif not error:
-        mirrors = [l for l in lines if re.match(pattern,line)]
-        return length, mirrors   
-    else:
-        sys.exit(6) 
+            mirror_index = 0
+        mirror_lines = self.file_lines[mirror_index:]
+        for idx, line in enumerate(mirror_lines):
+            if (not re.match(self.mirror_regex,line)) and (line != '') and (not line.startswith('#')):
+                self.error = True
+                print(f'Invalid Mirror: "{line}" on Line {idx + mirror_index + 1} of design file.')
 
-def validate_parse_test_file(lines):
-    """Check test file for invalid line(s) other than comments, spaces or rays."""
-    pattern = r'^[CR][1-9][0-9]*[+-]$'    #need to exclude c0+ as 0 is not a valid row
-    error = False
-    for idx, line in enumerate(lines):
-        if (not re.match(pattern,line)) and (line != '') and (not line.startswith('#')):
-            error = True
-            print(f'Invalid Ray: "{line}" on Line {idx + 1} of testfile.')
-    if not error:
-        rays = [l for l in lines if re.match(pattern,line)]
-        return rays   
-    else:
-        sys.exit(5) 
+    def parse_mirrors(self):
+        mirrors = []
+        for line in self.file_lines:    
+            if re.match(self.mirror_regex,line):
+                mirrors.append([int(mirror) for mirror in line.split()])
+        return mirrors
 
-def read_design_file(designFilepath):
-    """Parse design file and return length and mirror position."""
-    try:
-        with open(designFilepath) as file:
+    def has_error(self):
+        return self.error
 
-            lines = file.read().splitlines()
+    def get_holes(self):
+        return self.holes
+    
+    def get_mirrors(self):
+        return self.mirrors
+    
+class TestFile(File):
+    def __init__(self,filename):
+        super().__init__(filename)
+        self.file_lines = self.get_file_lines()
+        self.ray_regex = r'^[CR][1-9][0-9]*[+-]$'
+        self.rays = self.parse_rays()
+        self.error = False
 
-            # Remove comment / invalid lines
-            length, data_lines = validate_parse_design_file(lines)
-            #data_lines = [l for l in lines if l.replace(" ","").isdigit()]
-            # Retrieve grid length
-            #length = int(data_lines.pop(0))
-            # Retrieve mirror positions
-            mirror_positions = []
-            for mirrors in data_lines:
-                mirror_positions.append([int(mirror) for mirror in mirrors.split()])
+    def validate(self):
+        self.check_rays_error()
 
-        return length, mirror_positions
-    except IOError:
-        print(f'Could not read file: {designFilepath}. Please check file name or directory.')
-        sys.exit(3)
+    def check_rays_error(self):
+        for idx, line in enumerate(self.file_lines):
+            if (not re.match(self.ray_regex,line)) and (line != '') and (not line.startswith('#')):
+                self.error = True
+                print(f'Invalid Ray: "{line}" on Line {idx + 1} of testfile.')
 
+    def parse_rays(self):
+        return [l for l in self.file_lines if re.match(self.ray_regex,l)]
 
-def read_test_file(testFilepath):
-    """Parse test file and return an array of places a ray is fired."""
-    try:
-        with open(testFilepath) as file:
-            lines = file.read().splitlines()
-            rays = validate_parse_test_file(lines)
-            return rays
-    except IOError:
-        print(f'Could not read file: {testFilepath}. Please check file name or directory.')
-        sys.exit(4)
+    def has_error(self):
+        return self.error
+
+    def get_rays(self):
+        return self.rays
 
 def main():
     """Validate inputs and start simulation session."""
@@ -89,23 +107,30 @@ def main():
     #logging.basicConfig(level=level, format=fmt)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('designFilepath',help='Path to design file which specifies \
+    parser.add_argument('design_filename',help='Path to design file which specifies \
                         the size of grid and positions and types of mirrors.')
-    parser.add_argument('testFilepath',help='Path to test file that lists the places \
+    parser.add_argument('test_filename',help='Path to test file that lists the places \
                         in order a ray is fired in.')
     args = parser.parse_args()
 
-    designFilepath = args.designFilepath
-    testFilepath = args.testFilepath
-    
-    length, mirror_positions = read_design_file(designFilepath)
-    rays = read_test_file(testFilepath)
+    design_file = DesignFile(args.design_filename)
+    test_file = TestFile(args.test_filename)
 
-    start = time.perf_counter()
-    session = Session(length, mirror_positions, rays)
+    design_file.validate()
+    test_file.validate() 
+
+    if design_file.has_error() or test_file.has_error():
+        sys.exit(3)
+    else:
+        holes = design_file.get_holes()
+        mirror_positions = design_file.get_mirrors()
+        rays = test_file.get_rays()
+
+    #start = time.perf_counter()
+    session = Session(holes, mirror_positions, rays)
     session.start_simulation()
-    end = time.perf_counter()
-    print(end-start)
+    #end = time.perf_counter()
+    #print(end-start)
 
 
 if __name__ == '__main__':
