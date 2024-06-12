@@ -6,6 +6,7 @@ const START_NODE_ROW = 5;
 const START_NODE_COL = 2;
 const FINISH_NODE_ROW = 10;
 const FINISH_NODE_COL = 45;
+const HOLES = 8;
 
 export default function Grid() {
     const [state, setState] = useState({
@@ -14,7 +15,7 @@ export default function Grid() {
 
     useEffect(() => {
         setState({
-            grid: getInitialGrid()
+            grid: getInitialGrid(HOLES)
         });
     }, [])
 
@@ -43,11 +44,11 @@ export default function Grid() {
     )
 }
 
-const getInitialGrid = () => {
+const getInitialGrid = (HOLES) => {
     const grid = [];
-    for (let row = 0; row < 20; row++) {
+    for (let row = 0; row < HOLES; row++) {
         const currentRow = [];
-        for (let col = 0; col < 50; col++) {
+        for (let col = 0; col < HOLES; col++) {
             currentRow.push(createNode(col, row));
         }
         grid.push(currentRow);
@@ -58,11 +59,6 @@ const createNode = (col, row) => {
     return {
         col,
         row,
-        isStart: row === START_NODE_ROW && col === START_NODE_COL,
-        isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
-        distance: Infinity,
-        isVisited: false,
-        isWall: false,
-        previousNode: null,
+        isMirror: false,
     };
 };
