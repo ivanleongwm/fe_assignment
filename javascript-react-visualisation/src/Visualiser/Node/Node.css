@@ -5,11 +5,15 @@
   display: inline-block;
 }
 
+.node.outside {
+  outline: none;
+}
+
 .node-mirror {
   background-color: red;
 }
 
-.true {
+.edge {
   background-color: rgb(223, 223, 223);
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Node from './Node/Node'
 import './grid.css'
 
-const HOLES = 8;
+const HOLES = 8
 
 export default function Grid() {
     const [state, setState] = useState({
@@ -20,7 +20,7 @@ export default function Grid() {
 
     useEffect(() => {
         setState({
-            grid: getInitialGrid(HOLES)
+            grid: getInitialGrid(HOLES+4) // add 2 holes for edges
         });
     }, [])
 
@@ -59,15 +59,24 @@ const getInitialGrid = (HOLES) => {
     for (let row = 0; row < HOLES; row++) {
         const currentRow = [];
         for (let col = 0; col < HOLES; col++) {
-            if ((row == 0 & col == 0) | (row == HOLES-1 & col == HOLES-1)
-                | (row == 0 & col == HOLES-1) | (row == HOLES-1 & col == 0)
+            if ( (row == 1 & col == 0) | (row == 0 & col == 1) 
+                | (row == HOLES-2 & col == HOLES-1) | (row == HOLES-1 & col == HOLES-2)
+                | (row == 1 & col == HOLES-1) | (row == 0 & col == HOLES-2) 
+                | (row == HOLES-2 & col == 0) | (row == HOLES-1 & col == 1) 
                 ) {
-                currentRow.push(createNode(col, row, false));
+                currentRow.push(createNode(col, row, 'outside'));
+            }
+            else if ((row == 1 & col == 1)| (row == HOLES-2 & col == HOLES-2)
+                     |(row == 1 & col == HOLES-2) | (row == HOLES-2 & col == 1)) {
+                currentRow.push(createNode(col, row, 'white-edge'));
+            }
+            else if ((row == 1) | (col == 1) | (row == HOLES-2) | (col == HOLES-2)) {
+                currentRow.push(createNode(col, row, 'edge'));
             }
             else if ((row == 0) | (col == 0) | (row == HOLES-1) | (col == HOLES-1)) {
-                currentRow.push(createNode(col, row, true));
+                currentRow.push(createNode(col, row, 'outside'));
             } else {
-                currentRow.push(createNode(col, row, false));
+                currentRow.push(createNode(col, row, 'inside'));
             }
             
         }
