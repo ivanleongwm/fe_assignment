@@ -14,7 +14,7 @@ export default function Grid() {
     const updateRayStart = (event) => {
         if (event.target.classList.contains('edge')) {
             const cell_id = event.target.id.split('-').map(function(item){
-                return parseInt(item);
+                return parseInt(item)
             })
             setState(state=>({
                 ...state,
