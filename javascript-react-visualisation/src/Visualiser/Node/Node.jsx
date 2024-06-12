@@ -1,7 +1,7 @@
 import React from 'react';
 import './Node.css'
 
-function Node({ row, col, isMirror, mirrorMode,edge }) {
+function Node({ row, col, isMirror, mirrorMode,edge,content }) {
 
     const handleClickCell = (event) => {
         if (mirrorMode == 'Add Normal Mirror') {
@@ -40,7 +40,7 @@ function Node({ row, col, isMirror, mirrorMode,edge }) {
             id={`node-${row}-${col}`}
             className={`node ${edge}`}
             onClick={handleClickCell}    
-        ></div>
+        >{content}</div>
     )
 }
 

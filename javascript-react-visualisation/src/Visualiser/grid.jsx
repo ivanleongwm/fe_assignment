@@ -31,7 +31,7 @@ export default function Grid() {
                 {grid.map((row, rowIdx) => {
                     return <div className='row' key={rowIdx}>
                         {row.map((node, nodeIdx) => {
-                            const { row, col, isMirror, edge} = node;
+                            const { row, col, isMirror, edge, content} = node;
                             return (
                                 <Node
                                     key={nodeIdx}
@@ -40,6 +40,7 @@ export default function Grid() {
                                     row={row}
                                     col={col}
                                     edge={edge}
+                                    content={content}
                                     />
                             );
                         })}
@@ -63,6 +64,8 @@ const getInitialGrid = (HOLES) => {
                 | (row == HOLES-2 & col == HOLES-1) | (row == HOLES-1 & col == HOLES-2)
                 | (row == 1 & col == HOLES-1) | (row == 0 & col == HOLES-2) 
                 | (row == HOLES-2 & col == 0) | (row == HOLES-1 & col == 1) 
+                | (row == 0 & col == 0) | (row == 0 & col == HOLES-1) 
+                | (row == HOLES-1 & col == 0) | (row == HOLES-1 & col == HOLES-1) 
                 ) {
                 currentRow.push(createNode(col, row, 'outside'));
             }
@@ -73,9 +76,12 @@ const getInitialGrid = (HOLES) => {
             else if ((row == 1) | (col == 1) | (row == HOLES-2) | (col == HOLES-2)) {
                 currentRow.push(createNode(col, row, 'edge'));
             }
-            else if ((row == 0) | (col == 0) | (row == HOLES-1) | (col == HOLES-1)) {
-                currentRow.push(createNode(col, row, 'outside'));
-            } else {
+            else if ((col == 0)|(col == HOLES-1)) {
+                currentRow.push(createNode(col, row, 'outside',row-1));
+            } else if ((row == 0)|(row == HOLES-1)) {
+                currentRow.push(createNode(col, row, 'outside',col-1));
+            }
+            else {
                 currentRow.push(createNode(col, row, 'inside'));
             }
             
@@ -84,11 +90,12 @@ const getInitialGrid = (HOLES) => {
     }
     return grid;
 };
-const createNode = (col, row, edge) => {
+const createNode = (col, row, edge, content) => {
     return {
         col,
         row,
         isMirror: false,
-        edge: edge
+        edge: edge,
+        content: content,
     };
 };
