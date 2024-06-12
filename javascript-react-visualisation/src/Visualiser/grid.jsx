@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import Node from './Node/Node'
 import './grid.css'
 
-const START_NODE_ROW = 5;
-const START_NODE_COL = 2;
-const FINISH_NODE_ROW = 10;
-const FINISH_NODE_COL = 45;
 const HOLES = 8;
 
 export default function Grid() {
     const [state, setState] = useState({
-        grid: []
+        grid: [],
+        mirrorMode: 'Add Normal Mirror'
     });
+
+    const changeMirrorMode = (event) => {
+        setState(state=>({
+            ...state,
+            mirrorMode: event.target.innerHTML
+        }))
+        console.log(state.mirrorMode)
+    }
 
     useEffect(() => {
         setState({
@@ -19,7 +24,7 @@ export default function Grid() {
         });
     }, [])
 
-    const { grid, mouseIsPressed } = state
+    const { grid } = state
     return (
         <div>
             <div className="grid">
@@ -31,14 +36,18 @@ export default function Grid() {
                                 <Node
                                     key={nodeIdx}
                                     isMirror={isMirror}
+                                    mirrorMode={state.mirrorMode}
                                     row={row}
-                                    col={col} />
+                                    col={col}
+                                    />
                             );
                         })}
                     </div>
                 })}
                 <p>FenixBox Description</p>
-                <Node />
+                <button onClick={changeMirrorMode}>Remove Mirror</button>
+                <button onClick={changeMirrorMode}>Add Normal Mirror</button>
+                <button onClick={changeMirrorMode}>Add Infinite Mirror</button>
             </div>
         </div>
     )
@@ -59,6 +68,6 @@ const createNode = (col, row) => {
     return {
         col,
         row,
-        isMirror: false,
+        isMirror: false
     };
 };
