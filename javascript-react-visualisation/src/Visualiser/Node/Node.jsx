@@ -1,7 +1,7 @@
 import React from 'react';
 import './Node.css'
 
-function Node({ row, col, isMirror, mirrorMode,edge,content }) {
+function Node({ row, col, isMirror, mirrorMode,edge,content,updateRayStart}) {
 
     const handleClickCell = (event) => {
         if (!event.target.classList.contains('edge')
@@ -14,9 +14,16 @@ function Node({ row, col, isMirror, mirrorMode,edge,content }) {
                 return removeMirror(event)
             } else if (mirrorMode == 'Add Infinite Mirror') {
                 return removeInfiniteMirror(event)
+            } 
+        }
+        if (event.target.classList.contains('edge')) {
+            if (mirrorMode == 'Shoot Ray') {
+                return updateRayStart(event)
             }
         }
     }
+
+    
 
     const addMirrorLife = (event) => {
         const cell = event.target
@@ -42,7 +49,7 @@ function Node({ row, col, isMirror, mirrorMode,edge,content }) {
  
     return (
         <div
-            id={`node-${row}-${col}`}
+            id={`${row}-${col}`}
             className={`node ${edge}`}
             onClick={handleClickCell}    
         >{content}</div>

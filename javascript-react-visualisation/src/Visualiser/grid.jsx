@@ -7,8 +7,22 @@ const HOLES = 8
 export default function Grid() {
     const [state, setState] = useState({
         grid: [],
-        mirrorMode: 'Add Normal Mirror'
+        mirrorMode: 'Add Normal Mirror',
+        rayStart: ''
     });
+
+    const updateRayStart = (event) => {
+        if (event.target.classList.contains('edge')) {
+            const cell_id = event.target.id.split('-').map(function(item){
+                return parseInt(item);
+            })
+            setState(state=>({
+                ...state,
+                rayStart: cell_id
+            }))
+            console.log(cell_id)
+        }
+    }
 
     const changeMirrorMode = (event) => {
         setState(state=>({
@@ -41,6 +55,7 @@ export default function Grid() {
                                     col={col}
                                     edge={edge}
                                     content={content}
+                                    updateRayStart={updateRayStart}
                                     />
                             );
                         })}
@@ -50,6 +65,7 @@ export default function Grid() {
                 <button onClick={changeMirrorMode}>Remove Mirror</button>
                 <button onClick={changeMirrorMode}>Add Normal Mirror</button>
                 <button onClick={changeMirrorMode}>Add Infinite Mirror</button>
+                <button onClick={changeMirrorMode}>Shoot Ray</button>
             </div>
         </div>
     )
