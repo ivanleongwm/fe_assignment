@@ -31,7 +31,7 @@ export default function Grid() {
                 {grid.map((row, rowIdx) => {
                     return <div className='row' key={rowIdx}>
                         {row.map((node, nodeIdx) => {
-                            const { row, col, isMirror} = node;
+                            const { row, col, isMirror, edge} = node;
                             return (
                                 <Node
                                     key={nodeIdx}
@@ -39,6 +39,7 @@ export default function Grid() {
                                     mirrorMode={state.mirrorMode}
                                     row={row}
                                     col={col}
+                                    edge={edge}
                                     />
                             );
                         })}
@@ -58,16 +59,27 @@ const getInitialGrid = (HOLES) => {
     for (let row = 0; row < HOLES; row++) {
         const currentRow = [];
         for (let col = 0; col < HOLES; col++) {
-            currentRow.push(createNode(col, row));
+            if ((row == 0 & col == 0) | (row == HOLES-1 & col == HOLES-1)
+                | (row == 0 & col == HOLES-1) | (row == HOLES-1 & col == 0)
+                ) {
+                currentRow.push(createNode(col, row, false));
+            }
+            else if ((row == 0) | (col == 0) | (row == HOLES-1) | (col == HOLES-1)) {
+                currentRow.push(createNode(col, row, true));
+            } else {
+                currentRow.push(createNode(col, row, false));
+            }
+            
         }
         grid.push(currentRow);
     }
     return grid;
 };
-const createNode = (col, row) => {
+const createNode = (col, row, edge) => {
     return {
         col,
         row,
-        isMirror: false
+        isMirror: false,
+        edge: edge
     };
 };

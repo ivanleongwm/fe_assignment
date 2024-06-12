@@ -9,6 +9,10 @@
   background-color: red;
 }
 
+.true {
+  background-color: rgb(223, 223, 223);
+}
+
 .node-start {
   background-color: green;
 }
