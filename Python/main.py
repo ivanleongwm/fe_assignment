@@ -25,7 +25,7 @@ class File():
                 return lines
         except IOError:
             print(f'Could not read file: {self.filename}. Please check file name or directory.')
-            sys.exit(4)
+            sys.exit(3)
 
 
 class DesignFile(File):
@@ -166,7 +166,7 @@ def main():
     design_file.validate()
     test_file.validate() 
     if design_file.has_error() or test_file.has_error():
-        sys.exit(3)
+        sys.exit(4)
 
     """Extract Data"""
     holes = design_file.get_holes()

@@ -70,7 +70,7 @@ Use type hints
 Take home project tips
 1. set up virtual environment (with dependencies installed)
 2. triple check code to submit (instructions to set everything up)
-3. Focus on solving the code problem first and optimise later
+3. Focus on solving the core problem first and optimise later
 4. Add additional features if time permits
 5. If you have any questions please clarify instead of being instantly rejected when it fails the test case
 6. Small write up on design decisions, and potential improvements
@@ -95,8 +95,10 @@ Questions:
 Exceptions to handle:
 Exit code 2: Incomplete arguments to CLI.
 Exit code 3: Invalid design file name or path.
-Exit code 4: Invalid test file name or path.
-Exit code 5: Invalid rays in testfile.
-Exit code 6: Invalid mirrors in designfile.
-Exit code 7: Number of holes missing.
-Exit code 8: Number of holes not on first uncommented line.
+             Invalid test file name or path.
+Exit code 4: Invalid rays in testfile.
+             Invalid mirrors in designfile.
+             Number of holes missing.
+             Number of holes not on first uncommented line.
+
+To Do: Mirror or Rays out of range or 0
