@@ -4,12 +4,17 @@ import './Node.css'
 function Node({ row, col, isMirror, mirrorMode,edge,content }) {
 
     const handleClickCell = (event) => {
-        if (mirrorMode == 'Add Normal Mirror') {
-            return addMirrorLife(event)
-        } else if (mirrorMode == 'Remove Mirror') {
-            return removeMirror(event)
-        } else if (mirrorMode == 'Add Infinite Mirror') {
-            return removeInfiniteMirror(event)
+        if (!event.target.classList.contains('edge')
+            & !event.target.classList.contains('outside')
+            & !event.target.classList.contains('white-edge')
+            ) {
+            if (mirrorMode == 'Add Normal Mirror') {
+                return addMirrorLife(event)
+            } else if (mirrorMode == 'Remove Mirror') {
+                return removeMirror(event)
+            } else if (mirrorMode == 'Add Infinite Mirror') {
+                return removeInfiniteMirror(event)
+            }
         }
     }
 
