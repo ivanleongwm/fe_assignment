@@ -100,5 +100,4 @@ Exit code 4: Invalid rays in testfile.
              Invalid mirrors in designfile.
              Number of holes missing.
              Number of holes not on first uncommented line.
-
-To Do: Mirror or Rays out of range or 0
+Exit Code 5: Mirror or Rays out of range or 0

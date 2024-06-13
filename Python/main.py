@@ -14,8 +14,9 @@ class File():
         filename : string
             Name of the file in the main script directory.
     """
-    def __init__(self,filename):
+    def __init__(self,filename, debug_mode):
         self.filename = filename
+        self.debug_mode = debug_mode
 
     def get_file_lines(self):
         """Read file contents into an array separated by newlines."""
@@ -24,7 +25,8 @@ class File():
                 lines = file.read().splitlines()
                 return lines
         except IOError:
-            print(f'Could not read file: {self.filename}. Please check file name or directory.')
+            if self.debug_mode:
+                print(f'Could not read file: {self.filename}. Please check file name or directory.')
             sys.exit(3)
 
 
@@ -44,8 +46,8 @@ class DesignFile(File):
         error : boolean
             Whether the design file contains an error or not.
     """
-    def __init__(self,filename):
-        super().__init__(filename)
+    def __init__(self,filename, debug_mode):
+        super().__init__(filename, debug_mode)
         self.file_lines = self.get_file_lines()
         self.mirror_regex = r'^[1-9][0-9]*\s[1-9][0-9]*\s?([1-9][0-9]*)*$'
         self.holes = None
@@ -61,13 +63,15 @@ class DesignFile(File):
         """Checks for missing number of holes or wrong order of holes number."""
         for line in self.file_lines:
             if re.match(self.mirror_regex,line):
-                print('Number of holes in FenixBox should be on first uncommented line.')
+                if self.debug_mode:
+                    print('Number of holes in FenixBox should be on first uncommented line.')
                 self.error = True
                 return None
             elif line.isdigit():
                 self.holes = int(line)
                 return None
-        print('Number of holes in FenixBox missing from design file.')
+        if self.debug_mode:    
+            print('Number of holes in FenixBox missing from design file.')
         self.error = True
 
     def check_mirror_error(self):
@@ -80,7 +84,8 @@ class DesignFile(File):
         for idx, line in enumerate(mirror_lines):
             if (not re.match(self.mirror_regex,line)) and (line != '') and (not line.startswith('#')):
                 self.error = True
-                print(f'Invalid Mirror: "{line}" on Line {idx + mirror_index + 1} of design file.')
+                if self.debug_mode:
+                    print(f'Invalid Mirror: "{line}" on Line {idx + mirror_index + 1} of design file.')
 
     def parse_mirrors(self):
         """Convert mirror string coordinates/ life into one list of integers per mirror."""
@@ -116,8 +121,8 @@ class TestFile(File):
         error : boolean
             Whether the test file contains an error or not.
     """
-    def __init__(self,filename):
-        super().__init__(filename)
+    def __init__(self,filename, debug_mode):
+        super().__init__(filename, debug_mode)
         self.file_lines = self.get_file_lines()
         self.ray_regex = r'^[CR][1-9][0-9]*[+-]$'
         self.rays = self.parse_rays()
@@ -132,7 +137,8 @@ class TestFile(File):
         for idx, line in enumerate(self.file_lines):
             if (not re.match(self.ray_regex,line)) and (line != '') and (not line.startswith('#')):
                 self.error = True
-                print(f'Invalid Ray: "{line}" on Line {idx + 1} of testfile.')
+                if self.debug_mode:
+                    print(f'Invalid Ray: "{line}" on Line {idx + 1} of testfile.')
 
     def parse_rays(self):
         """Extract valid ray coordinates/ direction into list."""
@@ -148,9 +154,7 @@ class TestFile(File):
 
 def main():
     """Validate inputs, extract data and start simulation session."""
-    #level = logging.DEBUG
-    #fmt = '[%(levelname)s] %(asctime)s - %(message)s'
-    #logging.basicConfig(level=level, format=fmt)
+    debug_mode = False
 
     """Parse Command Line Arguments Input"""
     parser = argparse.ArgumentParser()
@@ -158,11 +162,14 @@ def main():
                         the size of grid and positions and types of mirrors.')
     parser.add_argument('test_filename',help='Path to test file that lists the places \
                         in order a ray is fired in.')
+    parser.add_argument('-d',action='store_true')
     args = parser.parse_args()
 
-    """Validate Inputs"""
-    design_file = DesignFile(args.design_filename)
-    test_file = TestFile(args.test_filename)
+    debug_mode = args.d
+
+    """Input Data Validation"""
+    design_file = DesignFile(args.design_filename, debug_mode)
+    test_file = TestFile(args.test_filename, debug_mode)
     design_file.validate()
     test_file.validate() 
     if design_file.has_error() or test_file.has_error():
@@ -172,6 +179,22 @@ def main():
     holes = design_file.get_holes()
     mirror_positions = design_file.get_mirrors()
     rays = test_file.get_rays()
+
+    """Logical Validation"""
+    # Check mirrors out of range
+    for mirror in mirror_positions:
+        if mirror[0] > holes or mirror[1] > holes:
+            if debug_mode:    
+                print(f'Mirror: {str(mirror)} out of range. FenixBox only has {holes} holes.')
+            sys.exit(5)
+
+    # Check rays out of range
+    for ray in rays:
+        if int(ray[1:-1]) > holes:
+            if debug_mode:    
+                print(f'Ray: {ray} out of range. FenixBox only has {holes} holes.')
+            sys.exit(5)
+
 
     """Start Simulation Session"""
     #start = time.perf_counter()
