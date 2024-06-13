@@ -1,4 +1,4 @@
-FenixBox Assignment
+Assignment
 Completed by Leong Wei Ming 
 
 Description:
@@ -41,8 +41,9 @@ in any directory your prefer.
         mv logic.py.txt logic.py
 
 Option 2:
-1. Please download 
-
+1. Please download "main.py" and "logic.py" from the main branch of my github repo:
+https://github.com/ivanleongwm/fe_assignment
+This repo is only public for the assessment, will take it private subsequently.
 
 These "main.py" and "logic.py" need to be in the same folder as "main.py" is importing the Session class 
 from "logic.py" from the same folder unless otherwise amended/specified.
