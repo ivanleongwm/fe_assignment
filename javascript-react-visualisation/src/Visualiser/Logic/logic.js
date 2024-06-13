@@ -1,6 +1,6 @@
 class Cell {
     constructor() {
-        this.mirror = false;
+        this.mirror = cell.;
         this.life = Infinity;
     }
     deductLife() {

@@ -123,36 +123,46 @@ export default function Grid() {
             if (topRightMirror && bottomRightMirror) {
                 if (topRightCell.innerHTML != '∞') {
                     topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
-                } else if (bottomRightCell.innerHTML != '∞'){
+                    removeEmptyMirror(topRightCell)
+                } 
+                if (bottomRightCell.innerHTML != '∞'){
                     bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                    removeEmptyMirror(bottomRightCell)
                 }
                 return 'left'
             } else if (topRightMirror) {
                 if (topRightCell.innerHTML != '∞') {
                     topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                    removeEmptyMirror(topRightCell)
                 }
                 return 'down'
             } else if (bottomRightMirror) {
                 if (bottomRightCell.innerHTML != '∞'){
                     bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                    removeEmptyMirror(bottomRightCell)
                 }
                 return 'up'
             }} else if (currentDirection === 'left') {
                 if (topLeftMirror && bottomLeftMirror) {
                     if (topLeftCell.innerHTML != '∞') {
                         topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
-                    } else if (bottomLeftCell.innerHTML != '∞'){
+                        removeEmptyMirror(topLeftCell)
+                    }
+                    if (bottomLeftCell.innerHTML != '∞'){
                         bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                        removeEmptyMirror(bottomLeftCell)
                     }
                     return 'right'
                 } else if (topLeftMirror) {
                     if (topLeftCell.innerHTML != '∞') {
                         topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
+                        removeEmptyMirror(topLeftCell)
                     }
                     return 'down'
                 } else if (bottomLeftMirror) {
                     if (bottomLeftCell.innerHTML != '∞') {
                         bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                        removeEmptyMirror(bottomLeftCell)
                     }
                     return 'up'
                 }
@@ -160,18 +170,23 @@ export default function Grid() {
                 if (topLeftMirror && topRightMirror) {
                     if (topLeftCell.innerHTML != '∞') {
                         topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
-                    } else if (topRightCell.innerHTML != '∞'){
+                        removeEmptyMirror(topLeftCell)
+                    }
+                    if (topRightCell.innerHTML != '∞'){
                         topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                        removeEmptyMirror(topRightCell)
                     }
                     return 'down';
                 } else if (topLeftMirror) {
                     if (topLeftCell.innerHTML != '∞') {
                         topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
+                        removeEmptyMirror(topLeftCell)
                     }
                     return 'right'
                 } else if (topRightMirror) {
                     if (topRightCell.innerHTML != '∞') {
                         topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                        removeEmptyMirror(topRightCell)
                     }
                     return 'left'
                 }
@@ -179,18 +194,23 @@ export default function Grid() {
                 if (bottomLeftMirror && bottomRightMirror) {
                     if (bottomLeftCell.innerHTML != '∞') {
                         bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
-                    } else if (bottomRightCell.innerHTML != '∞'){
+                        removeEmptyMirror(bottomLeftCell)
+                    }
+                    if (bottomRightCell.innerHTML != '∞'){
                         bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                        removeEmptyMirror(bottomRightCell)
                     }
                     return 'up'
                 } else if (bottomLeftMirror) {
                     if (bottomLeftCell.innerHTML != '∞') {
                         bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                        removeEmptyMirror(bottomLeftCell)
                     }
                     return 'right'
                 } else if (bottomRightMirror) {
                     if (bottomRightCell.innerHTML != '∞') {
                         bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                        removeEmptyMirror(bottomRightCell)
                     }
                     return 'left'
                 }
@@ -200,11 +220,84 @@ export default function Grid() {
 
     }
 
+    const checkCollision = (new_row,new_col) => {
+        let current_cell = document.getElementById(`${String(new_row)}-${String(new_col)}`)
+        if (current_cell.classList.contains('node-mirror')) {
+            current_cell.innerHTML = parseInt(current_cell.innerHTML) - 1
+            removeEmptyMirror(current_cell)
+            return true
+        } else {
+            return false
+        }
+    }
+
+    const removeEmptyMirror = (cell) => {
+        if (cell.innerHTML != '∞' && parseInt(cell.innerHTML)==0){
+            cell.classList.remove('node-mirror');
+            cell.innerHTML = '';
+        }
+    } 
+
     async function animate(curr_row,curr_col,direction) {
         wipe_visited()
         let new_row = curr_row;
         let new_col = curr_col;
         let new_direction = direction;
+        let start_sides_mirror = false
+
+        if (new_direction == 'up' | new_direction == 'down') {
+            if (new_col !== 1) {
+                let leftCell = document.getElementById(`${String(new_row)}-${String(new_col - 1)}`)
+                if (leftCell.classList.contains('node-mirror')) {
+                    if (leftCell.innerHTML != '∞'){
+                        leftCell.innerHTML = parseInt(leftCell.innerHTML) - 1
+                        removeEmptyMirror(leftCell)
+                    }
+                    document.getElementById(`${String(new_row)}-${String(new_col)}`).className = 'node node-visited';
+                    start_sides_mirror = true
+                }
+            }
+            if (new_col !== (HOLES + 1)) {
+                let rightCell = document.getElementById(`${String(new_row)}-${String(new_col + 1)}`)
+                if (rightCell.classList.contains('node-mirror')) {
+                    if (rightCell.innerHTML != '∞'){
+                        rightCell.innerHTML = parseInt(rightCell.innerHTML) - 1
+                        removeEmptyMirror(rightCell)
+                    }
+                    document.getElementById(`${String(new_row)}-${String(new_col)}`).className = 'node node-visited';
+                    start_sides_mirror = true
+                }
+            }
+        } 
+        if (new_direction == 'left' | new_direction == 'right') {
+            if (new_row !== 1) {
+                let topCell = document.getElementById(`${String(new_row-1)}-${String(new_col)}`)
+                if (topCell.classList.contains('node-mirror')) {
+                    if (topCell.innerHTML != '∞'){
+                        topCell.innerHTML = parseInt(topCell.innerHTML) - 1
+                        removeEmptyMirror(topCell)
+                    }
+                    document.getElementById(`${String(new_row)}-${String(new_col)}`).className = 'node node-visited';
+                    start_sides_mirror = true
+                }
+            }
+            if (new_row !== HOLES + 1) {
+                let bottomCell = document.getElementById(`${String(new_row+1)}-${String(new_col)}`)
+                if (bottomCell.classList.contains('node-mirror')) {
+                    if (bottomCell.innerHTML != '∞'){
+                        bottomCell.innerHTML = parseInt(bottomCell.innerHTML) - 1
+                        removeEmptyMirror(bottomCell)
+                    }
+                    document.getElementById(`${String(new_row)}-${String(new_col)}`).className = 'node node-visited';
+                    start_sides_mirror = true
+                }
+            }
+        }
+        if (start_sides_mirror) {
+            return 0
+        }
+
+
         for (let i = 0; i < Infinity; i++ ) {
 
             document.getElementById(`${String(new_row)}-${String(new_col)}`).className = 'node node-visited';
@@ -218,7 +311,7 @@ export default function Grid() {
 
             console.log("NEW",new_row,new_col);     
             console.log(direction,checkEnd(new_row,new_col,direction))
-            if (checkEnd(new_row,new_col,new_direction) | i>20) {
+            if (checkEnd(new_row,new_col,new_direction) | checkCollision(new_row,new_col)) {
                 break;
             }
         }
