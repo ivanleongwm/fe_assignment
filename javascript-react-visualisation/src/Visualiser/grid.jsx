@@ -57,14 +57,14 @@ export default function Grid() {
         console.log(state.mirrorMode)
     }
 
-   const checkEnd = (curr_row,curr_col,currentDirection, length) => {
-        if (currentDirection === 'up' && curr_row === 2) {
+   const checkEnd = (curr_row,curr_col,currentDirection) => {
+        if (currentDirection == 'up' & curr_row == 1) {
             return true
-        } else if (currentDirection === 'right' && curr_col === (length + 1)) {
+        } else if (currentDirection == 'right' & curr_col == (HOLES + 2)) {
             return true
-        } else if (currentDirection === 'down' && curr_row === (length + 1)) {
+        } else if (currentDirection == 'down' & curr_row == (HOLES + 2)) {
             return true
-        } else if (currentDirection === 'left' && curr_col === 2) {
+        } else if (currentDirection == 'left' & curr_col == 1) {
             return true
         }
     }
@@ -77,12 +77,150 @@ export default function Grid() {
         }
     }
 
-    const animate = (curr_row,curr_col,direction) => {
+    const move = (curr_row,curr_col,currentDirection) => {
+        if (currentDirection === 'right') {
+            return [curr_row,curr_col+1]
+        } else if (currentDirection === 'left') {
+            return [curr_row,curr_col-1]
+        } else if (currentDirection === 'up') {
+            return [curr_row-1,curr_col]
+        } else if (currentDirection === 'down') {
+            return [curr_row+1,curr_col]
+        }
+    }
+
+    const checkMirror = (curr_row, curr_col, length, currentDirection) => {
+
+        let topRightMirror = false;
+        let bottomRightMirror = false;
+        let topLeftMirror = false;
+        let bottomLeftMirror = false;
+        let topLeftCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col - 1)}`);
+        let bottomLeftCell = document.getElementById(`${String(curr_row + 1)}-${String(curr_col - 1)}`);
+        let topRightCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col+1)}`);
+        let bottomRightCell = document.getElementById(`${String(curr_row + 1)}-${String(curr_col + 1)}`);
+        
+        if (curr_col < length + 2 & curr_row > 2) {
+            let topRightCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col)}`)
+            topRightMirror = topRightCell.classList.contains('node-mirror')
+        }
+        if (curr_col < length + 2 & curr_row < length + 2) {
+            let bottomRightCell = document.getElementById(`${String(curr_row + 1)}-${String(curr_col + 1)}`)
+            bottomRightMirror = bottomRightCell.classList.contains('node-mirror')
+        }
+        if (curr_col > 2 & curr_row > 2) {
+            let topLeftCell =  document.getElementById(`${String(curr_row - 1)}-${String(curr_col - 1)}`)
+            topLeftMirror = topLeftCell.classList.contains('node-mirror')
+        }
+        if (curr_col > 2 & curr_row < length + 2) {
+            let bottomLeftCell = document.getElementById(`${String(curr_row + 1)}-${String(curr_col - 1)}`)
+            bottomLeftMirror = bottomLeftCell.classList.contains('node-mirror')
+        }
+
+        console.log(topRightMirror,bottomRightMirror,topLeftMirror,bottomLeftMirror)
+
+        if (currentDirection === 'right') {
+            if (topRightMirror && bottomRightMirror) {
+                if (topRightCell.innerHTML != '∞') {
+                    topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                } else if (bottomRightCell.innerHTML != '∞'){
+                    bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                }
+                return 'left'
+            } else if (topRightMirror) {
+                if (topRightCell.innerHTML != '∞') {
+                    topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                }
+                return 'down'
+            } else if (bottomRightMirror) {
+                if (bottomRightCell.innerHTML != '∞'){
+                    bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                }
+                return 'up'
+            }} else if (currentDirection === 'left') {
+                if (topLeftMirror && bottomLeftMirror) {
+                    if (topLeftCell.innerHTML != '∞') {
+                        topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
+                    } else if (bottomLeftCell.innerHTML != '∞'){
+                        bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                    }
+                    return 'right'
+                } else if (topLeftMirror) {
+                    if (topLeftCell.innerHTML != '∞') {
+                        topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
+                    }
+                    return 'down'
+                } else if (bottomLeftMirror) {
+                    if (bottomLeftCell.innerHTML != '∞') {
+                        bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                    }
+                    return 'up'
+                }
+            } else if (currentDirection === 'up') {
+                if (topLeftMirror && topRightMirror) {
+                    if (topLeftCell.innerHTML != '∞') {
+                        topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
+                    } else if (topRightCell.innerHTML != '∞'){
+                        topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                    }
+                    return 'down';
+                } else if (topLeftMirror) {
+                    if (topLeftCell.innerHTML != '∞') {
+                        topLeftCell.innerHTML = parseInt(topLeftCell.innerHTML) - 1
+                    }
+                    return 'right'
+                } else if (topRightMirror) {
+                    if (topRightCell.innerHTML != '∞') {
+                        topRightCell.innerHTML = parseInt(topRightCell.innerHTML) - 1
+                    }
+                    return 'left'
+                }
+            } else if (currentDirection === 'down') {
+                if (bottomLeftMirror && bottomRightMirror) {
+                    if (bottomLeftCell.innerHTML != '∞') {
+                        bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                    } else if (bottomRightCell.innerHTML != '∞'){
+                        bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                    }
+                    return 'up'
+                } else if (bottomLeftMirror) {
+                    if (bottomLeftCell.innerHTML != '∞') {
+                        bottomLeftCell.innerHTML = parseInt(bottomLeftCell.innerHTML) - 1
+                    }
+                    return 'right'
+                } else if (bottomRightMirror) {
+                    if (bottomRightCell.innerHTML != '∞') {
+                        bottomRightCell.innerHTML = parseInt(bottomRightCell.innerHTML) - 1
+                    }
+                    return 'left'
+                }
+            }
+        
+        return currentDirection
+
+    }
+
+    async function animate(curr_row,curr_col,direction) {
         wipe_visited()
-        for (let i = 0; i < 6; i++ ) {
-            setTimeout(() => {
-                document.getElementById(`${String(curr_row+i)}-${String(curr_col)}`).className = 'node node-visited';
-            }, 10*i*3);
+        let new_row = curr_row;
+        let new_col = curr_col;
+        let new_direction = direction;
+        for (let i = 0; i < Infinity; i++ ) {
+
+            document.getElementById(`${String(new_row)}-${String(new_col)}`).className = 'node node-visited';
+            await new Promise(r => setTimeout(r, 200));
+            
+            new_direction = checkMirror(new_row,new_col,HOLES,new_direction);
+           
+
+            [new_row, new_col] = move(new_row,new_col,new_direction);
+      
+
+            console.log("NEW",new_row,new_col);     
+            console.log(direction,checkEnd(new_row,new_col,direction))
+            if (checkEnd(new_row,new_col,new_direction) | i>20) {
+                break;
+            }
         }
     }
 
