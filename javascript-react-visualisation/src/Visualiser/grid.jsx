@@ -97,11 +97,11 @@ export default function Grid() {
         let bottomLeftMirror = false;
         let topLeftCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col - 1)}`);
         let bottomLeftCell = document.getElementById(`${String(curr_row + 1)}-${String(curr_col - 1)}`);
-        let topRightCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col+1)}`);
+        let topRightCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col + 1)}`);
         let bottomRightCell = document.getElementById(`${String(curr_row + 1)}-${String(curr_col + 1)}`);
         
         if (curr_col < length + 2 & curr_row > 2) {
-            let topRightCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col)}`)
+            let topRightCell = document.getElementById(`${String(curr_row - 1)}-${String(curr_col + 1)}`)
             topRightMirror = topRightCell.classList.contains('node-mirror')
         }
         if (curr_col < length + 2 & curr_row < length + 2) {
