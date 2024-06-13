@@ -2,7 +2,7 @@
 # Completed by Leong Wei Ming 
 
 ## Description:
-Thank you for this opportunity to interview with Fenix, 
+Thank you for this opportunity :) 
 I enjoyed this interesting assignment and appreciate any feedback 
 on how the codes can be further improved. Because I only relied on 3
 dependencies within the Python Standard Library, I opted not to provide
