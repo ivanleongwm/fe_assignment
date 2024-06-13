@@ -8,21 +8,46 @@ export default function Grid() {
     const [state, setState] = useState({
         grid: [],
         mirrorMode: 'Add Normal Mirror',
-        rayStart: ''
+        rayStart: '',
+        rayDirection: ''
     });
 
     const updateRayStart = (event) => {
+        let direction = ''
+        let curr_row = 0
+        let curr_col = 0
         if (event.target.classList.contains('edge')) {
             const cell_id = event.target.id.split('-').map(function(item){
                 return parseInt(item)
             })
+            if (cell_id[1]==1){
+                direction = 'right'
+                curr_row = cell_id[0]
+                curr_col = cell_id[1]+1
+            } else if (cell_id[1]==HOLES+2) {
+                direction = 'left'
+                curr_row = cell_id[0]
+                curr_col = cell_id[1]-1
+            } else if (cell_id[0]==1) {
+                direction = 'down'
+                curr_row = cell_id[0]+1
+                curr_col = cell_id[1]
+            } else if (cell_id[0]==HOLES+2) {
+                direction = 'up'
+                curr_row = cell_id[0]-1
+                curr_col = cell_id[1]
+            }
             setState(state=>({
                 ...state,
-                rayStart: cell_id
+                rayStart: [curr_row,curr_col],
+                rayDirection: direction
             }))
-            console.log(cell_id)
+            console.log(cell_id,direction)
+            animate(curr_row,curr_col,direction)
         }
     }
+
+    
 
     const changeMirrorMode = (event) => {
         setState(state=>({
@@ -30,6 +55,35 @@ export default function Grid() {
             mirrorMode: event.target.innerHTML
         }))
         console.log(state.mirrorMode)
+    }
+
+   const checkEnd = (curr_row,curr_col,currentDirection, length) => {
+        if (currentDirection === 'up' && curr_row === 2) {
+            return true
+        } else if (currentDirection === 'right' && curr_col === (length + 1)) {
+            return true
+        } else if (currentDirection === 'down' && curr_row === (length + 1)) {
+            return true
+        } else if (currentDirection === 'left' && curr_col === 2) {
+            return true
+        }
+    }
+
+    const wipe_visited = () => {
+        for (let i=0; i < HOLES+2; i++) {
+            for (let y=0; y < HOLES+2; y++) {
+                document.getElementById(`${String(i)}-${String(y)}`).classList.remove('node-visited');
+            }
+        }
+    }
+
+    const animate = (curr_row,curr_col,direction) => {
+        wipe_visited()
+        for (let i = 0; i < 6; i++ ) {
+            setTimeout(() => {
+                document.getElementById(`${String(curr_row+i)}-${String(curr_col)}`).className = 'node node-visited';
+            }, 10*i*3);
+        }
     }
 
     useEffect(() => {
@@ -56,6 +110,7 @@ export default function Grid() {
                                     edge={edge}
                                     content={content}
                                     updateRayStart={updateRayStart}
+                                    animate={animate}
                                     />
                             );
                         })}

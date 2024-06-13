@@ -1,7 +1,7 @@
 import React from 'react';
 import './Node.css'
 
-function Node({ row, col, isMirror, mirrorMode,edge,content,updateRayStart}) {
+function Node({ row, col, isMirror, mirrorMode,edge,content,updateRayStart, animate}) {
 
     const handleClickCell = (event) => {
         if (!event.target.classList.contains('edge')
@@ -22,7 +22,6 @@ function Node({ row, col, isMirror, mirrorMode,edge,content,updateRayStart}) {
             }
         }
     }
-
     
 
     const addMirrorLife = (event) => {
