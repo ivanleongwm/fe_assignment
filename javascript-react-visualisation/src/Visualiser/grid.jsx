@@ -223,9 +223,15 @@ export default function Grid() {
     const checkCollision = (new_row,new_col) => {
         let current_cell = document.getElementById(`${String(new_row)}-${String(new_col)}`)
         if (current_cell.classList.contains('node-mirror')) {
-            current_cell.innerHTML = parseInt(current_cell.innerHTML) - 1
-            removeEmptyMirror(current_cell)
-            return true
+            if (current_cell.innerHTML != '∞' ) {
+                current_cell.innerHTML = parseInt(current_cell.innerHTML) - 1
+                removeEmptyMirror(current_cell)
+                return true
+            } else {
+                return true
+            }
+
+            
         } else {
             return false
         }
