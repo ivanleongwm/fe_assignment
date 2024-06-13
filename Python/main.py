@@ -1,11 +1,8 @@
 if __name__ == '__main__':
     import sys
-    import os
     import re
-    import time
-    import logging
     import argparse
-    from impl1 import Session
+    from logic import Session
 
 class File():
     """A Class to represent a file.
@@ -158,11 +155,11 @@ def main():
 
     """Parse Command Line Arguments Input"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('design_filename',help='Path to design file which specifies \
+    parser.add_argument('design_filename', help='Path and/or Name of design file which specifies \
                         the size of grid and positions and types of mirrors.')
-    parser.add_argument('test_filename',help='Path to test file that lists the places \
+    parser.add_argument('test_filename', help='Path and/or Name of test file that lists the places \
                         in order a ray is fired in.')
-    parser.add_argument('-d',action='store_true')
+    parser.add_argument('-d', help='Turns on debug mode to locate input errors.',action='store_true')
     args = parser.parse_args()
 
     debug_mode = args.d
@@ -195,13 +192,12 @@ def main():
                 print(f'Ray: {ray} out of range. FenixBox only has {holes} holes.')
             sys.exit(5)
 
-
     """Start Simulation Session"""
-    #start = time.perf_counter()
     session = Session(holes, mirror_positions, rays)
     session.start_simulation()
-    #end = time.perf_counter()
-    #print(end-start)
+
+    """Terminate Program Upon Completion"""
+    sys.exit(0)
 
 
 if __name__ == '__main__':
@@ -209,8 +205,4 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        logger.info('Interrupted')
-        try:
-            sys.exit()
-        except SystemExit:
-            os._exit(0)
+        sys.exit(6)

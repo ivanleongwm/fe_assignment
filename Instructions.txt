@@ -1,14 +1,14 @@
-## FenixBox Assignment
-## Completed by Leong Wei Ming 
+FenixBox Assignment
+Completed by Leong Wei Ming 
 
-# Description:
+Description:
 Thank you for this opportunity to interview with Fenix, 
 I enjoyed this interesting assignment and appreciate any feedback 
 on how the codes can be further improved. Because I only relied on 3
 dependencies within the Python Standard Library, I opted not to provide
 a setup for a virtual environment only for this case.
 
-# My answer/design consists of two python scripts.
+My answer/design consists of two python scripts.
 1. "main.py" which is the main script that reads the inputs, validates 
 and starts the simulation session by importing the Session class 
 from "logic.py"; and
@@ -21,7 +21,7 @@ https://ivanleongwm.github.io/fe_visualisation/
 Thanks again for taking out the time to view these codes.
 
 
-# Dependencies:
+Dependencies:
 Installed Python3, version 3.11 and above have been tested. 
 Only 3 modules from the Python Standard Library are required:
 1. sys
@@ -29,13 +29,13 @@ Only 3 modules from the Python Standard Library are required:
 3. argparse
 These modules should come pre-installed with python3.
 
-# Installing
+Installing
 1. Save the two python scripts ("main.py" and "logic.py") in the same folder
 in any directory you intend to run these scripts in. These two scripts
 need to be in the same folder as "main.py" is importing the Session class 
 from "logic.py" from the same folder unless otherwise amended/specified.
 
-# Executing the Python program:
+Executing the Python program:
 Run the following linux command. 
 python3 {path/main.py} {path/design_file_name} {path/test_file_name} {optional -d flag for debug mode}
 
@@ -55,7 +55,7 @@ Run the "main.py" script with "--help" flag for details of required arguments:
 python3 main.py --help
 
 
-# Design Thought Process:
+Design Thought Process:
 I chose to implement the traversal logic in the clearest way possible,
 by generating an n by n grid to represent FenixBox, and to get the Beam
 object to traverse through the box square by square while checking for
@@ -65,7 +65,7 @@ time complexity, but it allowed me to implement the logic clearly.
 I've represented a simulation using the Session class so that multiple simulations
 can be run if required in future by importing this class.
 
-# Future Improvements:
+Future Improvements:
 Nevertheless, to improve the future efficiency of this code, the following
 other implementations of "logic.py" can be considered:
 1. Where the number of holes is large:
@@ -86,7 +86,7 @@ The ideal solution could be a combination of these implementation
 by using a scheduler to select the right logic given the input features.
 
 
-# Exit Codes to Exceptions Mapping:
+Exit Codes to Exceptions Mapping:
 Exit code 2: Incomplete arguments to CLI.
 Exit code 3: Invalid design file name or path.
              Invalid test file name or path.
