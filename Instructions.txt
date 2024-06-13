@@ -30,9 +30,21 @@ Only 3 modules from the Python Standard Library are required:
 These modules should come pre-installed with python3.
 
 Installing
-1. Save the two python scripts ("main.py" and "logic.py") in the same folder
-in any directory you intend to run these scripts in. These two scripts
-need to be in the same folder as "main.py" is importing the Session class 
+Option 1: (Download python scripts as txt from email)
+1. Save the two files ("main.py.txt" and "logic.py.txt") in the same folder
+in any directory your prefer. 
+2. Rename the files from "main.py.txt" to "main.py" and "logic.py.txt" to "logic.py"
+    2.1 Change directory into the folder with these files using:
+        cd {path to directory}
+    2.1 Rename the files using the following linux command:
+        mv main.py.txt main.py
+        mv logic.py.txt logic.py
+
+Option 2:
+1. Please download 
+
+
+These "main.py" and "logic.py" need to be in the same folder as "main.py" is importing the Session class 
 from "logic.py" from the same folder unless otherwise amended/specified.
 
 Executing the Python program:
